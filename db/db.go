@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	_ "github.com/lib/pq" //postgres driver
 	"github.com/zcericola/hexmouse-backend/config"
 )
 
@@ -15,7 +16,7 @@ type DB *DB
 func URL(dbConfig *config.DBConfig) string {
 	config.GenerateDBConfig()
 	return fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?ssl=true",
+		"%s:%s@tcp(%s:%s)/%s?sslmode=true",
 		dbConfig.User,
 		dbConfig.Password,
 		dbConfig.Host,
