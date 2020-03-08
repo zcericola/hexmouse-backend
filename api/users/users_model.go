@@ -2,8 +2,9 @@ package users
 
 //User describes an application user
 type User struct {
-	userID   int
-	username string
-	email    string
-	statusID int
+	UserID   uint
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"-"` //don't encode, don't return
+	StatusID int
 }

@@ -11,10 +11,11 @@ import (
 func init() {
 	config.Init()
 	db.Init()
-	log.Print("All actions completed.")
+	log.Print("All init actions completed.")
 
 }
 
 func main() {
 	server.Init()
+	defer db.Close()
 }

@@ -9,8 +9,8 @@ import (
 	"github.com/zcericola/hexmouse-backend/config"
 )
 
-//DB is an instance of the database
-type DB *DB
+//DB is the database type
+var DB *sql.DB
 
 //URL is the formatted connection string pulled from the dbconfig
 func URL(dbConfig *config.DBConfig) string {
@@ -26,12 +26,26 @@ func URL(dbConfig *config.DBConfig) string {
 }
 
 //Init connects to the database
-func Init() *sql.DB {
+func Init() {
 	DBConfig := config.GenerateDBConfig()
 	DBConnectionString := URL(DBConfig)
-	db, err := sql.Open("postgres", DBConnectionString)
-	if err != nil {
-		log.Fatal(err)
+	var err error
+	instance, err := sql.Open("postgres", DBConnectionString)
+	if err = instance.Ping(); err != nil {
+		log.Panic(err)
 	}
-	return db
+	DB = instance
+	// defer DB.Close()
+	log.Print("Db successfully connected.")
+}
+
+//Close will close the database connection
+func Close() {
+	DB.Close()
+
+}
+
+//Query will interact with the database
+func Query() {
+
 }
