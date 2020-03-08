@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/zcericola/hexmouse-backend/config"
 	"github.com/zcericola/hexmouse-backend/db"
 	"github.com/zcericola/hexmouse-backend/server"
@@ -8,10 +10,12 @@ import (
 
 func init() {
 	config.Init()
+	db.Init()
+	log.Print("All init actions completed.")
 
 }
 
 func main() {
 	server.Init()
-	db.Init()
+	defer db.Close()
 }

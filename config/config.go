@@ -14,6 +14,7 @@ type DBConfig struct {
 	User     string
 	Name     string
 	Password string
+	URI      string
 }
 
 //Init will load environment variables
@@ -33,6 +34,7 @@ func GenerateDBConfig() *DBConfig {
 	user, _ := os.LookupEnv("PGUSER")
 	name, _ := os.LookupEnv("PGDATABASE")
 	password, _ := os.LookupEnv("PGPASSWORD")
+	URI, _ := os.LookupEnv("PGURI")
 
 	DBConfig := DBConfig{
 		Host:     host,
@@ -40,6 +42,7 @@ func GenerateDBConfig() *DBConfig {
 		User:     user,
 		Name:     name,
 		Password: password,
+		URI:      URI,
 	}
 
 	return &DBConfig
