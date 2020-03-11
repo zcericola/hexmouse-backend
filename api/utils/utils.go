@@ -1,6 +1,8 @@
 package utils
 
-import "log"
+import (
+	"log"
+)
 
 //HandleError will panic and log errors
 func HandleError(err error) {

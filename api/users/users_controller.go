@@ -11,10 +11,12 @@ import (
 //CreateUser adds a new user
 func CreateUser(c *gin.Context) {
 
-	user := User{}
-	c.BindJSON(&user)
+	params := User{}
+	c.BindJSON(&params)
 
-	text := `INSERT INTO users
+	newUser := User{}
+
+	insertStatement := `INSERT INTO users
 	(username, email, password)
 	VALUES($1, $2, $3)
 	RETURNING user_id
@@ -22,13 +24,20 @@ func CreateUser(c *gin.Context) {
 	, email
 	, status_id`
 
-	err := db.DB.QueryRow(text, user.Username, user.Email, user.Password).Scan(&user.UserID, &user.Username, &user.Email, &user.StatusID)
+	stmt, err := db.DB.Prepare(insertStatement)
+
+	err = stmt.QueryRow(
+		params.Username,
+		params.Email,
+		params.Password,
+	).Scan(&newUser.UserID,
+		&newUser.Username,
+		&newUser.Email,
+		&newUser.StatusID,
+	)
 	utils.HandleError(err)
 
-	//referencing the user returns the values (&user)
-	//*user doesn't work though, not sure why, should be the other
-	//way around
-	c.JSON(200, gin.H{"data": user})
+	c.JSON(200, gin.H{"data": newUser})
 }
 
 //GetUser will return a specific user

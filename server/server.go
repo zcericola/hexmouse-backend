@@ -18,7 +18,5 @@ func Init() {
 			"message": "pong",
 		})
 	})
-
 	router.Run(PORT) //listen and serve on port 3002
-
 }
