@@ -45,13 +45,32 @@ func CreateUser(c *gin.Context) {
 
 //GetUser will return a specific user
 func GetUser(c *gin.Context) {
-	name := c.Param("name")
+	userID := c.Param("id")
+	user := User{}
+	selectStatement := `
+	SELECT u.user_id
+	, u.username
+	, u.email
+	, u.status_id
+	FROM users u
+	WHERE u.user_id = $1;
+	`
+	stmt, err := db.DB.Prepare(selectStatement)
+	utils.HandleError(err)
+	err = stmt.QueryRow(
+		userID,
+	).Scan(
+		&user.UserID,
+		&user.Username,
+		&user.Email,
+		&user.StatusID,
+	)
+	utils.HandleError(err)
+
 	//to send a string use Sprintf, the f designator is needed for any formatted strings
-	message := fmt.Sprintf("hello %s", name)
-	//TODO: FIX THIS TO MIRROR RETURN FORMAT OF OTHER ENDPOINTS
 	c.JSON(200, gin.H{
-		"message": "User successfully retrieved.",
-		"data":    message,
+		"message": fmt.Sprintf("User %s has been successfully retrieved.", userID),
+		"data":    user,
 	})
 }
 
@@ -87,6 +106,7 @@ func UpdateUser(c *gin.Context) {
 		&updatedUser.Username,
 		&updatedUser.Email,
 	)
+	utils.HandleError(err)
 
 	c.JSON(200, gin.H{
 		"message": "User successfully updated.",

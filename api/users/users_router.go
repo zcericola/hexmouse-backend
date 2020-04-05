@@ -8,7 +8,7 @@ import (
 func Routes(route *gin.Engine) {
 	router := route.Group("/users")
 	router.POST("/", CreateUser)
-	router.GET("/:name", GetUser)
+	router.GET("/:id", GetUser)
 	router.PUT("/:id", UpdateUser)
 	router.DELETE("/:id", DeleteUser)
 
