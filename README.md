@@ -9,6 +9,7 @@ go get http://github.com/zcericola/hexmouse-backend
 ## Usage
 
 To run server: `go run main.go`
+
 To run server with hot reloading: `fresh`
 
 ## License
