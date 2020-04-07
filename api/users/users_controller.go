@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zcericola/hexmouse-backend/api/auth"
 	"github.com/zcericola/hexmouse-backend/api/utils"
 	"github.com/zcericola/hexmouse-backend/db"
 )
@@ -24,18 +25,24 @@ func CreateUser(c *gin.Context) {
 	, email
 	, status_id`
 
+	//create password hash
+	hash, _ := auth.HashPassword(params.Password)
+	//clear password field to prevent logging
+	params.Password = ""
+
 	stmt, err := db.DB.Prepare(insertStatement)
 	utils.HandleError(err)
 
 	err = stmt.QueryRow(
 		params.Username,
 		params.Email,
-		params.Password,
+		hash,
 	).Scan(&newUser.UserID,
 		&newUser.Username,
 		&newUser.Email,
 		&newUser.StatusID,
 	)
+	utils.HandleError(err)
 
 	c.JSON(200, gin.H{
 		"message": "User successfully created.",
