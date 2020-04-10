@@ -33,6 +33,16 @@ func CheckForValidUserStatus(statusID uint) bool {
 	return false
 }
 
+//GenerateSession will create or update a session for a user
+func GenerateSession(username string) string {
+	//creates a random session token
+	// sessionToken := uuid.NewV4().String()
+
+	// _, err = db.Cache.Do("SETEX", sessionToken, "120", username)
+	// utils.HandleError(err)
+	return username
+}
+
 //LoginUser allows a user to login to the application
 func LoginUser(params Credentials) User {
 	user := User{}
@@ -66,11 +76,14 @@ func LoginUser(params Credentials) User {
 		log.Panic("Invalid Password.")
 	}
 
+	//Check if user is active
 	var isValidStatus bool = CheckForValidUserStatus(user.StatusID)
 
 	if isValidStatus == false {
 		log.Panic("User has been deactivated.")
 	}
+
+	GenerateSession(user.Username)
 
 	return User{
 		UserID:   user.UserID,

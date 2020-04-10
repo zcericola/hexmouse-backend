@@ -2,3 +2,5 @@
 .vscode/
 /tmp
 _debug.bin
+redis-stable
+redis-stable.tar.gz

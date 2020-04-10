@@ -10,6 +10,8 @@ import (
 	"github.com/zcericola/hexmouse-backend/db"
 )
 
+//TODO: Rename all the controller functions as Handlers and move the logic into the service layer
+
 //CreateUser adds a new user
 func CreateUser(c *gin.Context) {
 	params := User{}
