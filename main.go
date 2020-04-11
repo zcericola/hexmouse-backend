@@ -10,7 +10,7 @@ import (
 
 func init() {
 	config.Init()
-	db.Init()
+	db.InitDBConn()
 	db.InitRedisCache()
 	log.Print("All init actions completed.")
 

@@ -1,8 +1,10 @@
 package auth
 
 import (
+	"fmt"
 	"log"
 
+	uuid "github.com/satori/go.uuid"
 	"github.com/zcericola/hexmouse-backend/api/utils"
 	"github.com/zcericola/hexmouse-backend/db"
 	"golang.org/x/crypto/bcrypt"
@@ -36,10 +38,13 @@ func CheckForValidUserStatus(statusID uint) bool {
 //GenerateSession will create or update a session for a user
 func GenerateSession(username string) string {
 	//creates a random session token
-	// sessionToken := uuid.NewV4().String()
+	sessionToken := uuid.NewV4().String()
+	fmt.Print("sessionToken gen: ", sessionToken)
+	_, err := db.Cache.Do("SETEX", sessionToken, "120", username)
+	utils.HandleError(err)
 
-	// _, err = db.Cache.Do("SETEX", sessionToken, "120", username)
-	// utils.HandleError(err)
+	//Todo: Set Cookie here
+
 	return username
 }
 
@@ -83,6 +88,7 @@ func LoginUser(params Credentials) User {
 		log.Panic("User has been deactivated.")
 	}
 
+	//Generate or renew session for user
 	GenerateSession(user.Username)
 
 	return User{

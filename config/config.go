@@ -17,6 +17,15 @@ type DBConfig struct {
 	URI      string
 }
 
+// //RDConfig used to connect to Redis Instance
+// type RDConfig struct {
+// 	Host     string
+// 	Port     string
+// 	User     string
+// 	Password string
+// 	URI      string
+// }
+
 //Init will load environment variables
 func Init() {
 	if err := godotenv.Load(); err != nil {
@@ -47,3 +56,21 @@ func GenerateDBConfig() *DBConfig {
 
 	return &DBConfig
 }
+
+// //GenerateRDConfig generates a connection string for Redis
+// func GenerateRDConfig() *RDConfig {
+// 	host, _ := os.LookupEnv("RDHOST")
+// 	port, _ := os.LookupEnv("RDPORT")
+// 	user, _ := os.LookupEnv("RDUSER")
+// 	password, _ := os.LookupEnv("RDPASSWORD")
+// 	URI, _ := os.LookupEnv("RDURI")
+
+// 	RDConfig := RDConfig{
+// 		Host:     host,
+// 		Port:     port,
+// 		User:     user,
+// 		Password: password,
+// 		URI:      URI,
+// 	}
+// 	return &RDConfig
+// }
