@@ -3,6 +3,8 @@ package auth
 import (
 	"log"
 
+	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 	"github.com/zcericola/hexmouse-backend/api/utils"
 	"github.com/zcericola/hexmouse-backend/db"
 	"golang.org/x/crypto/bcrypt"
@@ -31,6 +33,40 @@ func CheckForValidUserStatus(statusID uint) bool {
 		return true
 	}
 	return false
+}
+
+//SetCookieForUser will set the session cookie
+func SetCookieForUser(tokenValue string, c *gin.Context) {
+	c.SetCookie("session_token", tokenValue, 120, "/", "localhost", false, true)
+}
+
+//DeleteSession will remove a session from the cache
+func DeleteSession(sessionKey string) (err error) {
+	_, err = db.Cache.Do("DEL", sessionKey)
+	return err
+}
+
+//RefreshSession refreshes a session for an existing user
+func RefreshSession(username string, c *gin.Context) (string, error) {
+	newSessionToken := uuid.NewV4().String()
+	_, err := db.Cache.Do("SETEX", newSessionToken, "120", username)
+	return newSessionToken, err
+}
+
+//GenerateSession will create an initial session for a user
+func GenerateSession(username string, c *gin.Context) {
+	//creates a random session token
+	sessionToken := uuid.NewV4().String()
+	//sets the token in the redis cache with 120 second ttl
+	_, err := db.Cache.Do("SETEX", sessionToken, "120", username)
+	utils.HandleError(err)
+
+	//check if there is a session_token already
+	_, err = c.Cookie("session_token")
+	//if no cookie, set the token
+	if err != nil {
+		SetCookieForUser(sessionToken, c)
+	}
 }
 
 //LoginUser allows a user to login to the application
@@ -66,6 +102,7 @@ func LoginUser(params Credentials) User {
 		log.Panic("Invalid Password.")
 	}
 
+	//Check if user is active
 	var isValidStatus bool = CheckForValidUserStatus(user.StatusID)
 
 	if isValidStatus == false {

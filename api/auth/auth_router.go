@@ -8,4 +8,5 @@ import (
 func Routes(route *gin.Engine) {
 	router := route.Group("/auth")
 	router.POST("/", LoginUserHandler)
+	router.GET("/refresh", RefreshSessionHandler)
 }
