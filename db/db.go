@@ -51,8 +51,8 @@ func InitDBConn() {
 
 //Close will close the database connection
 func Close() {
-	defer DB.Close()
-	defer Cache.Close()
+	DB.Close()
+	Cache.Close()
 	log.Print("Connections closed after main.")
 
 }
@@ -64,15 +64,13 @@ func Query() {
 
 //createRedisPool will make a pool for redis connections
 func createRedisPool() *redis.Pool {
-	redisURL, _ := os.LookupEnv("REDIS_URL")
-	// rdPort, _ := os.LookupEnv("RDPORT")
 	return &redis.Pool{
 		//max # of idle connections
 		MaxIdle: 80,
 		//max number of active connections at one time
 		MaxActive: 12000,
 		Dial: func() (redis.Conn, error) {
-			c, err := redis.Dial("tcp", redisURL)
+			c, err := redis.DialURL(os.Getenv("REDIS_URL"))
 			if err != nil {
 				panic(err.Error())
 			}
