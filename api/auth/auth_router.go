@@ -7,6 +7,7 @@ import (
 //Routes holds all auth routes
 func Routes(route *gin.Engine) {
 	router := route.Group("/auth")
-	router.POST("/", LoginUserHandler)
+	router.POST("/login", LoginUserHandler)
+	router.POST("/logout", LogoutUserHandler)
 	router.GET("/refresh", RefreshSessionHandler)
 }
