@@ -36,12 +36,13 @@ func CheckForValidUserStatus(statusID uint) bool {
 }
 
 //SetCookieForUser will set the session cookie
-func SetCookieForUser(tokenValue string, c *gin.Context) {
-	c.SetCookie("session_token", tokenValue, 120, "/", "localhost", false, true)
+func SetCookieForUser(tokenValue string, maxAge int, c *gin.Context) {
+	c.SetCookie("session_token", tokenValue, maxAge, "/", "localhost", false, true)
+	log.Print("session_token set: ", tokenValue)
 }
 
-//DeleteSession will remove a session from the cache
-func DeleteSession(sessionKey string) (err error) {
+//DestroySession will remove a session from the cache
+func DestroySession(sessionKey string) (err error) {
 	_, err = db.Cache.Do("DEL", sessionKey)
 	return err
 }
@@ -62,10 +63,10 @@ func GenerateSession(username string, c *gin.Context) {
 	utils.HandleError(err)
 
 	//check if there is a session_token already
-	_, err = c.Cookie("session_token")
-	//if no cookie, set the token
-	if err != nil {
-		SetCookieForUser(sessionToken, c)
+	existingToken, err := c.Cookie("session_token")
+	//if no cookie or cookie is empty, set the token
+	if err != nil || existingToken == "" {
+		SetCookieForUser(sessionToken, 120, c)
 	}
 }
 
