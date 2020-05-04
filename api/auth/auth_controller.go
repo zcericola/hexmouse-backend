@@ -27,7 +27,6 @@ func LoginUserHandler(c *gin.Context) {
 func LogoutUserHandler(c *gin.Context) {
 	//get user information from the session cookie
 	sessionToken, err := c.Cookie("session_token")
-	//TODO: If I logout a user and then log back in and then log back out it won't delete the new session because the old cookie is still present I think?!
 
 	if err != nil {
 		if err == http.ErrNoCookie {
